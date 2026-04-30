@@ -17,7 +17,7 @@ creds = ServiceAccountCredentials.from_json_keyfile_dict(creds_dict, scope)
 
 client = gspread.authorize(creds)
 
-sheet = client.open_by_key("15_GGlx6HeQR-UjxWEcR0oBPBvgKamXozO-ANUveGPFw").sheet1
+sheet = client.open_by_key("1f0iLPm1i63NYDHGi4QSqKO8E27PCj4IbQoACHhzbMlg").sheet1
 
 
 app = Flask(__name__)
@@ -45,8 +45,10 @@ def receive_data():
                 break
 
         if row_index:
-            sheet.update_cell(row_index, 2, goals)
-            print("UPDATED existing player")
+            current_goals = records[row_index - 2]["Goals"]
+            new_goals = current_goals + goals
+
+            sheet.update_cell(row_index, 2, new_goals)
         else:
             sheet.append_row([username, goals])
             print("ADDED new player")

@@ -17,7 +17,7 @@ creds = ServiceAccountCredentials.from_json_keyfile_dict(creds_dict, scope)
 
 client = gspread.authorize(creds)
 
-sheet = client.open_by_key("1f0iLPm1i63NYDHGi4QSqKO8E27PCj4IbQoACHhzbMlg").sheet1
+sheet = client.open_by_key("15_GGlx6HeQR-UjxWEcR0oBPBvgKamXozO-ANUveGPFw").worksheet("StatInput")
 
 
 app = Flask(__name__)

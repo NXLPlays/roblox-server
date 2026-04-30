@@ -17,6 +17,7 @@ creds = ServiceAccountCredentials.from_json_keyfile_dict(creds_dict, scope)
 
 client = gspread.authorize(creds)
 
+print([ws.title for ws in client.open_by_key("15_GGlx6HeQR-UjxWEcR0oBPBvgKamXozO-ANUveGPFw").worksheets()])
 sheet = client.open_by_key("15_GGlx6HeQR-UjxWEcR0oBPBvgKamXozO-ANUveGPFw").worksheet("StatInput")
 
 

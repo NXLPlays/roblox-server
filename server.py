@@ -35,8 +35,21 @@ def receive_data():
     goals = data.get("goals")
 
     try:
-        sheet.append_row([username, goals])
-        print("SUCCESS writing to sheet")
+        records = sheet.get_all_records()
+
+        row_index = None
+
+        for i, row in enumerate(records, start=2):
+            if row["Username"] == username:
+                row_index = i
+                break
+
+        if row_index:
+            sheet.update_cell(row_index, 2, goals)
+            print("UPDATED existing player")
+        else:
+            sheet.append_row([username, goals])
+            print("ADDED new player")
     except Exception as e:
         print("SHEET ERROR:", e)
 

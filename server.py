@@ -32,26 +32,30 @@ def receive_data():
     print("Received:", data)
 
     username = data.get("username")
-    goals = data.get("goals")
+    goals = int(data.get("goals"))
 
     try:
-        records = sheet.get_all_records()
+        usernames = sheet.col_values(1)
 
         row_index = None
 
-        for i, row in enumerate(records, start=2):
-            if row["Username"] == username:
+        for i, name in enumerate(usernames, start=1):
+            if name == username:
                 row_index = i
                 break
 
         if row_index:
-            current_goals = records[row_index - 2]["Goals"]
+            current_goals = sheet.cell(row_index, 2).value or 0
+            current_goals = int(current_goals)
+
             new_goals = current_goals + goals
 
             sheet.update_cell(row_index, 2, new_goals)
+            print("UPDATED existing player")
         else:
             sheet.append_row([username, goals])
             print("ADDED new player")
+
     except Exception as e:
         print("SHEET ERROR:", e)
 

@@ -35,6 +35,7 @@ def receive_data():
     goals = int(data.get("goals"))
 
     try:
+        print("USERNAMES COLUMN:", sheet.col_values(1))
         usernames = sheet.col_values(1)
 
         row_index = None

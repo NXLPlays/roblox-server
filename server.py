@@ -34,11 +34,11 @@ def receive_data():
 
     username = data.get("username")
 
+    passes = int(data.get("passes") or 0)
     goals = int(data.get("goals") or 0)
     assists = int(data.get("assists") or 0)
-    passes = int(data.get("passes") or 0)
 
-    # points rule
+    # points = goals + assists (your rule)
     points = goals + assists
 
     try:
@@ -54,17 +54,17 @@ def receive_data():
         if row_index:
             row = sheet.row_values(row_index)
 
-            current_goals = int(row[1]) if len(row) > 1 and row[1] else 0
-            current_assists = int(row[2]) if len(row) > 2 and row[2] else 0
-            current_passes = int(row[3]) if len(row) > 3 and row[3] else 0
+            current_passes = int(row[1]) if len(row) > 1 and row[1] else 0
+            current_goals = int(row[2]) if len(row) > 2 and row[2] else 0
+            current_assists = int(row[3]) if len(row) > 3 and row[3] else 0
             current_points = int(row[4]) if len(row) > 4 and row[4] else 0
 
             sheet.update(
                 range_name=f"B{row_index}:E{row_index}",
                 values=[[
+                    current_passes + passes,
                     current_goals + goals,
                     current_assists + assists,
-                    current_passes + passes,
                     current_points + points
                 ]]
             )
@@ -74,9 +74,9 @@ def receive_data():
         else:
             sheet.append_row([
                 username,
+                passes,
                 goals,
                 assists,
-                passes,
                 points
             ])
 

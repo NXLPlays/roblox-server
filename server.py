@@ -33,10 +33,13 @@ def receive_data():
     print("Received:", data)
 
     username = data.get("username")
-    goals = int(data.get("goals"))
+
+    passes = int(data.get("passes", 0))
+    goals = int(data.get("goals", 0))
+    assists = int(data.get("assists", 0))
+    points = int(data.get("points", 0))
 
     try:
-        print("USERNAMES COLUMN:", sheet.col_values(1))
         usernames = sheet.col_values(1)
 
         row_index = None
@@ -47,15 +50,22 @@ def receive_data():
                 break
 
         if row_index:
-            current_goals = sheet.cell(row_index, 2).value or 0
-            current_goals = int(current_goals)
+            # read current values safely
+            current_passes = int(sheet.cell(row_index, 2).value or 0)
+            current_goals = int(sheet.cell(row_index, 3).value or 0)
+            current_assists = int(sheet.cell(row_index, 4).value or 0)
+            current_points = int(sheet.cell(row_index, 5).value or 0)
 
-            new_goals = current_goals + goals
+            # update totals
+            sheet.update_cell(row_index, 2, current_passes + passes)
+            sheet.update_cell(row_index, 3, current_goals + goals)
+            sheet.update_cell(row_index, 4, current_assists + assists)
+            sheet.update_cell(row_index, 5, current_points + points)
 
-            sheet.update_cell(row_index, 2, new_goals)
             print("UPDATED existing player")
+
         else:
-            sheet.append_row([username, goals])
+            sheet.append_row([username, passes, goals, assists, points])
             print("ADDED new player")
 
     except Exception as e:
@@ -64,7 +74,7 @@ def receive_data():
 
     return {
         "status": "success",
-        "message": f"Added {username} with {goals} goals"
+        "message": f"Updated {username}"
     }
 
 if __name__ == "__main__":

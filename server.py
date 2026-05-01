@@ -33,7 +33,13 @@ def receive_data():
     print("Received:", data)
 
     username = data.get("username")
+
     goals = int(data.get("goals") or 0)
+    assists = int(data.get("assists") or 0)
+    passes = int(data.get("passes") or 0)
+
+    # points rule
+    points = goals + assists
 
     try:
         usernames = sheet.col_values(1)
@@ -48,19 +54,31 @@ def receive_data():
         if row_index:
             row = sheet.row_values(row_index)
 
-            current_goals = int(row[1] or 0)
-
-            new_goals = current_goals + goals
+            current_goals = int(row[1]) if len(row) > 1 and row[1] else 0
+            current_assists = int(row[2]) if len(row) > 2 and row[2] else 0
+            current_passes = int(row[3]) if len(row) > 3 and row[3] else 0
+            current_points = int(row[4]) if len(row) > 4 and row[4] else 0
 
             sheet.update(
-                f"B{row_index}",
-                [[new_goals]]
+                range_name=f"B{row_index}:E{row_index}",
+                values=[[
+                    current_goals + goals,
+                    current_assists + assists,
+                    current_passes + passes,
+                    current_points + points
+                ]]
             )
 
             print("UPDATED existing player (batch)")
 
         else:
-            sheet.append_row([username, goals, 0, 0, goals])
+            sheet.append_row([
+                username,
+                goals,
+                assists,
+                passes,
+                points
+            ])
 
             print("ADDED new player")
 
@@ -70,7 +88,7 @@ def receive_data():
 
     return {
         "status": "success",
-        "message": f"Added {username} with {goals} goals"
+        "message": f"Updated {username}"
     }
 
 if __name__ == "__main__":

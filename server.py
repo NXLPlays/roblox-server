@@ -10,6 +10,7 @@ scope = [
 
 import json
 import os
+import traceback
 
 creds_dict = json.loads(os.environ["creds"])
 
@@ -58,7 +59,8 @@ def receive_data():
             print("ADDED new player")
 
     except Exception as e:
-        print("SHEET ERROR:", e)
+        print("FULL ERROR:")
+        traceback.print_exc()
 
     return {
         "status": "success",
